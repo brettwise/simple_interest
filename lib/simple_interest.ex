@@ -1,4 +1,11 @@
 defmodule SimpleInterest do
+  @moduledoc """
+  This module is meant to figure simple interest.
+  """
+
+  @doc """
+  Main entry point for program. This is what is typed in IEX to start the program.
+  """
   def main do
     principal =
       get_number("principal")
@@ -18,10 +25,16 @@ defmodule SimpleInterest do
     exit(:normal)
   end
 
+  @doc """
+  Simply a wrapper for the stadard lib function.
+  """
   def get_number(string) do
     IO.gets "Enter the #{string}: "
   end
 
+  @doc """
+  Takes a string and converts it to a float. Also checks to make sure what's entered is actually a number.
+  """
   def convert_to_float(string) do
     try do
       {float, _} = Float.parse(string)
@@ -33,15 +46,31 @@ defmodule SimpleInterest do
     end
   end
 
+  @doc """
+  Simply returns the ROI list by year into the main function above.
+  """
   def calc_ROI(list, _, _, years) when years <= 0 do
     list
   end
 
+  @doc """
+  Calculates the ROI at end of each year. Takes a `list`, and 3 numbers: the principal, rate, and number of years.
+
+  ## Examples
+
+    iex> SimpleInterest.calc_ROI([], 1500, 4.3, 4)
+    
+    [1775.1231702014995, 1701.9397604999997, 1631.7734999999998, 1564.5]
+
+  """
   def calc_ROI(list, principal, rate, years) do
     principal = (principal * (1 + (rate/100)))
     calc_ROI([principal | list], principal, rate, years - 1)
   end
 
+  @doc """
+  Takes the list returned by `calc_ROI` and formats it to be output to the terminal.
+  """
   def format_list(list) do
     list
     |> Enum.map(fn(x) -> Float.to_string(x, [decimals: 2, compact: true]) end)
