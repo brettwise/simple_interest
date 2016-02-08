@@ -1,0 +1,2 @@
+defmodule SimpleInterest do
+end
