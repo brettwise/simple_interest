@@ -14,6 +14,7 @@ defmodule SimpleInterest do
 
     return = calc_ROI(principal, rate, years)
     send_message(years, rate, return)
+    exit(:normal)
   end
 
   def get_number(string) do
