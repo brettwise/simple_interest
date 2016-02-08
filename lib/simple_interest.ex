@@ -12,8 +12,9 @@ defmodule SimpleInterest do
     get_number("number of years")
       |>convert_to_float
 
-    return = calc_ROI(principal, rate, years)
-    send_message(years, rate, return)
+    calc_ROI([], principal, rate, years)
+    |> format_list
+    |> send_message(years, rate)
     exit(:normal)
   end
 
@@ -32,11 +33,23 @@ defmodule SimpleInterest do
     end
   end
 
-  def calc_ROI(principal, rate, years) do
-    (principal * (1 + ((rate/100) * years)))
+  def calc_ROI(list, _, _, years) when years <= 0 do
+    list
   end
 
-  def send_message(years, rate, return) do
-    IO.puts "After #{round(years)} at #{rate}%, the investment will be worth $#{Float.round(return, 2)}"
+  def calc_ROI(list, principal, rate, years) do
+    principal = (principal * (1 + (rate/100)))
+    calc_ROI([principal | list], principal, rate, years - 1)
+  end
+
+  def format_list(list) do
+    list
+    |> Enum.map(fn(x) -> Float.to_string(x, [decimals: 2, compact: true]) end)
+    |> Enum.reverse
+    |> Enum.map(fn(x) -> "$" <> x <> " " end)
+  end
+
+  def send_message(list, years, rate) do
+    IO.puts "After #{round(years)} years at #{rate}%, the investment will be worth the following at the end of each year: #{list}"
   end
 end
